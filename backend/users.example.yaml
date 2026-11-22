@@ -1,0 +1,8 @@
+# User für snapdrop (ADR 0003).
+# id:   stabiler Schlüssel, nur a-z, 0-9, _ und - (max. 32 Zeichen)
+# name: Anzeigename in der App
+users:
+  - id: anna
+    name: Anna
+  - id: max
+    name: Max

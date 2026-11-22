@@ -1,0 +1,24 @@
+# Beispiel-Deployment für snapdrop.
+#   cp docker-compose.example.yaml docker-compose.yaml
+#   mkdir -p data config && cp backend/users.example.yaml config/users.yaml
+#   cp snapdrop.env.example snapdrop.env   # ausfüllen
+#   docker compose up -d
+services:
+  snapdrop:
+    build: .                                   # oder ein fertiges Image: image: ghcr.io/<owner>/snapdrop:<version>
+    container_name: snapdrop
+    restart: unless-stopped
+    environment:
+      - TZ=Europe/Berlin
+      - SNAPDROP_ENV_FILE=/run/snapdrop.env
+    volumes:
+      - ./data:/data                           # SQLite; muss für UID 1001 beschreibbar sein (chown 1001 data)
+      - ./config:/config:ro                    # users.yaml – Ordner mounten, nicht die Datei (ADR 0003)
+      - ./snapdrop.env:/run/snapdrop.env:ro
+    ports:
+      - "8000:8000"   # ohne Reverse-Proxy; mit Traefik stattdessen die Labels unten nutzen
+    # labels:
+    #   - "traefik.enable=true"
+    #   - "traefik.http.routers.snapdrop.rule=Host(`snapdrop.example.org`)"
+    #   - "traefik.http.routers.snapdrop.tls=true"
+    #   - "traefik.http.services.snapdrop.loadbalancer.server.port=8000"
